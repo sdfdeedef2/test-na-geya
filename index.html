@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ТЕСТ НА СИЛУ ЖОПЫ 3000</title>
+    <style>
+        body {
+            background-color: #4b0082;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            transition: background-color 2s ease, opacity 1s ease;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .black-out {
+            background-color: black !important;
+            opacity: 0;
+        }
+
+        .main-warning {
+            color: red;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .gallery {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+
+        .img-container { 
+            width: 40%; 
+            max-width: 150px; 
+            position: relative;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+            border: 3px solid cyan;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            z-index: 5;
+        }
+
+        .extra-img {
+            position: fixed;
+            width: 80px;
+            height: auto;
+            z-index: 1;
+            transition: bottom 1.5s cubic-bezier(0.42, 0, 0.58, 1), left 0.5s ease;
+            bottom: -300px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        #custom-alert {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: lime;
+            border: 3px solid gold;
+            padding: 15px 30px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 2000;
+            transition: bottom 0.5s ease;
+            border-radius: 15px 15px 0 0;
+            white-space: nowrap;
+        }
+
+        .shaking { animation: ultra-heavy-shake 3s cubic-bezier(.36,.07,.19,.97) both; }
+
+        @keyframes ultra-heavy-shake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            5% { transform: translate(-40px, 30px) rotate(-30deg); }
+            10% { transform: translate(40px, -30px) rotate(30deg); }
+            15% { transform: translate(-35px, 25px) rotate(-25deg); }
+            20% { transform: translate(35px, -25px) rotate(25deg); }
+            30% { transform: translate(-25px, 15px) rotate(-15deg); }
+            40% { transform: translate(25px, -15px) rotate(15deg); }
+            50% { transform: translate(-15px, 10px) rotate(-10deg); }
+            65% { transform: translate(10px, -5px) rotate(5deg); }
+            80% { transform: translate(-5px, 2px) rotate(-2deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        #quiz-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
+            border: 4px solid gold;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            z-index: 999;
+            width: 85%;
+            max-width: 400px;
+        }
+
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            font-size: 18px;
+            background: #222;
+            color: lime;
+            border: 2px solid lime;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .btn-box {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            height: 90px;
+            position: relative;
+        }
+
+        .btn-gay {
+            width: 80px;
+            height: 80px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        #btn-yes { background: lime; color: black; }
+        #btn-no { background: red; color: white; position: fixed; z-index: 1000; }
+
+        #camera-stream { display: none; }
+
+        #dossier {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 450px;
+            background: white;
+            color: black;
+            border: 5px solid #000;
+            padding: 20px;
+            text-align: left;
+            z-index: 5000;
+            font-family: 'Courier New', Courier, monospace;
+            box-shadow: 10px 10px 0px red;
+        }
+
+        #dossier h1 { text-align: center; text-decoration: underline; margin-top: 0; font-size: 1.5rem; }
+        
+        #dossier-canvas {
+            float: right;
+            width: 120px;
+            height: 120px;
+            border: 2px solid black;
+            margin-left: 10px;
+            background: #eee;
+            object-fit: cover;
+        }
+
+        .warning-text {
+            color: red;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 20px;
+            border: 2px dashed red;
+            padding: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="slap-sound"><source src="ah.mp3" type="audio/mpeg"></audio>
+    <video id="video-67" playsinline style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:10000;"><source src="67.mp4" type="video/mp4"></video>
+    <video id="camera-stream" autoplay playsinline></video>
+
+    <div id="custom-alert">ну ебать маладес брат давай прадалжай</div>
+
+    <img src="penis.png" id="penis-img" class="extra-img">
+
+    <div id="main-content">
+        <div class="main-warning">ВНИМАНИЕ! ТОЛЬКО ДЛЯ ГЕЕВ С КРЕПКОЙ ЖОПОЙ ПОТОМУ ЧТО В АНАЛЬЧИК БУДИТ ПАЛЬЧИК!</div>
+        <div class="gallery">
+            <div class="img-container"><img src="spader_gey.png" onclick="slap(0, this)"></div>
+            <div class="img-container"><img src="spader_gey.png" onclick="slap(1, this)"></div>
+            <div class="img-container"><img src="spader_gey.png" onclick="slap(2, this)"></div>
+            <div class="img-container"><img src="spader_gey.png" onclick="slap(3, this)"></div>
+        </div>
+    </div>
+
+    <div id="quiz-container">
+        <h2 id="q-text" style="color: yellow;">Ведите имя</h2>
+        
+        <div id="step-1">
+            <input type="text" id="name-input" placeholder="Буквы...">
+            <br><br>
+            <button onclick="checkName()" style="padding: 12px 25px; background: cyan; border: none; font-weight: bold; border-radius: 5px;">ДАЛЕЕ</button>
+        </div>
+
+        <div id="step-2" style="display:none;">
+            <div style="font-size: 24px; color: yellow;" id="age-display">50</div>
+            <input type="range" id="age-range" min="0" max="100" value="50" oninput="document.getElementById('age-display').innerText = this.value">
+            <br><br>
+            <button onclick="checkAge()" style="padding: 12px 25px; background: cyan; border: none; font-weight: bold; border-radius: 5px;">ОК</button>
+        </div>
+
+        <div id="step-3" style="display:none;">
+            <div id="gay-buttons">
+                <div class="btn-box">
+                    <button id="btn-yes" class="btn-gay" onclick="confirmGay()">ДА</button>
+                    <button id="btn-no" class="btn-gay" onmouseover="startMove(event)" ontouchstart="startMove(event)">НЕТ</button>
+                </div>
+            </div>
+            <div id="photo-step" style="display:none; margin-top:20px;">
+                <button onclick="initCamera()" style="padding: 20px; background: gold; border: none; font-weight: bold; width: 100%; font-size: 1.2rem;">СДЕЛАТЬ ФОТО</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dossier">
+        <h1>ЛИЧНОЕ ДЕЛО</h1>
+        <canvas id="dossier-canvas"></canvas>
+        <p>В <span id="dos-time"></span> зарегистрировался новый гей под именем <strong id="dos-name"></strong>, ему <span id="dos-age"></span> лет.</p>
+        <p>И вот вы можете наблюдать на фото этого гея.</p>
+        <div class="warning-text">Если вы увидите его бегите как можно скорее иначе в анальчик будит пальчик!</div>
+    </div>
+
+    <script>
+        let slaps = [false, false, false, false];
+        let noCount = 0;
+        let isMoving = false;
+        let userName = "";
+        let userAge = "";
+
+        const video67 = document.getElementById('video-67');
+        const audio = document.getElementById('slap-sound');
+        const penis = document.getElementById('penis-img');
+        const alertBox = document.getElementById('custom-alert');
+        const camStream = document.getElementById('camera-stream');
+
+        function showCustomAlert(text, duration = 2000) {
+            alertBox.innerText = text;
+            alertBox.style.bottom = "0px";
+            setTimeout(() => { alertBox.style.bottom = "-100px"; }, duration);
+        }
+
+        function slap(index, element) {
+            if (slaps[index] && !slaps.every(s => s === true)) return;
+            const rect = element.getBoundingClientRect();
+            penis.style.transition = 'none';
+            penis.style.left = (rect.left + rect.width / 2) + 'px';
+            penis.style.bottom = '-300px';
+            
+            setTimeout(() => {
+                penis.style.transition = 'bottom 1.5s cubic-bezier(0.42, 0, 0.58, 1)';
+                const targetBottom = window.innerHeight - (rect.top + rect.height / 2 + penis.offsetHeight / 2);
+                penis.style.bottom = targetBottom + 'px';
+            }, 50);
+
+            setTimeout(() => {
+                audio.currentTime = 0; 
+                audio.play().catch(()=>{});
+                element.classList.remove('shaking');
+                void element.offsetWidth; 
+                element.classList.add('shaking');
+            }, 1400);
+
+            slaps[index] = true;
+            setTimeout(() => {
+                showCustomAlert('ну ебать маладес брат давай прадалжай');
+                penis.style.bottom = '-300px';
+                if (slaps.every(s => s === true)) {
+                    setTimeout(() => {
+                        document.body.classList.add('black-out');
+                        setTimeout(startQuiz, 1000);
+                    }, 2000);
+                }
+            }, 3000); 
+        }
+
+        function startQuiz() {
+            document.getElementById('main-content').style.display = 'none';
+            document.body.classList.remove('black-out');
+            document.getElementById('quiz-container').style.display = 'block';
+            setTimeout(() => { document.getElementById('quiz-container').style.opacity = '1'; }, 100);
+        }
+
+        function checkName() {
+            userName = document.getElementById('name-input').value.trim();
+            if (userName.length >= 1 && userName.length <= 10) {
+                document.getElementById('step-1').style.display = 'none';
+                document.getElementById('q-text').innerText = "Сколько тебе бля лет";
+                document.getElementById('step-2').style.display = 'block';
+            } else {
+                showCustomAlert("Имя от 1 до 10 букв!");
+            }
+        }
+
+        function checkAge() {
+            userAge = document.getElementById('age-range').value;
+            if (userAge === "67") {
+                document.body.classList.add('black-out');
+                setTimeout(() => {
+                    video67.style.display = 'block';
+                    video67.play().catch(()=>{});
+                    document.body.classList.remove('black-out');
+                }, 1000);
+                video67.onended = () => {
+                    document.body.classList.add('black-out');
+                    setTimeout(() => {
+                        video67.style.display = 'none';
+                        showStep3();
+                        document.body.classList.remove('black-out');
+                    }, 1000);
+                };
+            } else {
+                showStep3();
+            }
+        }
+
+        function showStep3() {
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('q-text').innerText = "Ты гей?";
+            document.getElementById('step-3').style.display = 'block';
+            const btnNo = document.getElementById('btn-no');
+            const box = document.querySelector('.btn-box').getBoundingClientRect();
+            btnNo.style.top = (box.top + 5) + 'px';
+            btnNo.style.left = (box.right - 85) + 'px';
+        }
+
+        function confirmGay() {
+            showCustomAlert('Маладес');
+            document.getElementById('gay-buttons').style.display = 'none';
+            document.getElementById('photo-step').style.display = 'block';
+            document.getElementById('q-text').innerText = "Сделай фото";
+        }
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                camStream.srcObject = stream;
+                setTimeout(takeRealPhoto, 800);
+            } catch (err) {
+                alert("ОТКАЗ В ДОСТУПЕ. СТРАНИЦА БУДЕТ ЗАКРЫТА.");
+                window.close();
+                document.body.innerHTML = ""; 
+            }
+        }
+
+        function takeRealPhoto() {
+            const canvas = document.getElementById('dossier-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = camStream.videoWidth;
+            canvas.height = camStream.videoHeight;
+            ctx.drawImage(camStream, 0, 0, canvas.width, canvas.height);
+            
+            const tracks = camStream.srcObject.getTracks();
+            tracks.forEach(track => track.stop());
+
+            document.body.style.backgroundColor = "white";
+            setTimeout(() => {
+                document.body.style.backgroundColor = "#4b0082";
+                document.getElementById('quiz-container').style.display = 'none';
+                
+                document.getElementById('dos-time').innerText = new Date().toLocaleTimeString();
+                document.getElementById('dos-name').innerText = userName;
+                document.getElementById('dos-age').innerText = userAge;
+                
+                document.getElementById('dossier').style.display = 'block';
+            }, 100);
+        }
+
+        function startMove(e) {
+            if (isMoving) return;
+            isMoving = true;
+            setTimeout(() => { moveNo(); isMoving = false; }, 300);
+        }
+
+        function moveNo() {
+            noCount++;
+            if (noCount >= 10) {
+                document.body.innerHTML = "<h1 style='margin-top:30%; padding:20px;'>ТЫ НЕ ГЕЙ. ИДИ НАХУЙ.</h1>";
+                setTimeout(() => window.close(), 2000);
+                return;
+            }
+            const btn = document.getElementById('btn-no');
+            btn.style.left = Math.max(10, Math.floor(Math.random() * (window.innerWidth - 100))) + 'px';
+            btn.style.top = Math.max(10, Math.floor(Math.random() * (window.innerHeight - 100))) + 'px';
+        }
+    </script>
+</body>
+</html>
